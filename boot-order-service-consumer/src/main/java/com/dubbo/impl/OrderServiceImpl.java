@@ -2,11 +2,9 @@ package com.dubbo.impl;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import dubbo.bean.UserAddress;
 import dubbo.service.OrderService;
 import dubbo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,6 +31,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     public List<UserAddress> error(String userId) {
+        System.out.println("edit by hot_fix");
         List<UserAddress> errorList = new ArrayList<UserAddress>();
         UserAddress address1 = new UserAddress(null, "数据错误", "", "数据错误", "数据错误", "数据错误");
         errorList.add(address1);
