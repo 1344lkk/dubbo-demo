@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+       http://dubbo.apache.org/schema/dubbo
+       http://dubbo.apache.org/schema/dubbo/dubbo.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd ">
+
+    <context:component-scan base-package="com.dubbo"/>
+
+    <!--服务应用名称-->
+    <dubbo:application name="order-service-consumer"/>
+
+    <!--服务注册中心(单机配置)--> <!--check="false" 关闭注册中心启动时检查,启动时没有注册中心也不报错-->
+    <dubbo:registry protocol="zookeeper" address="127.0.0.1:2181" check="false"/>
+
+    <!-- 生成远程rpc服务代理，可以和本地bean一样使用UserService-->
+    <!--check属性表示，启动时不会去注册中心检测需要的服务提供者，当调用的时候才会去检测-->
+    <!--retries="3",如果第一次调用失败，会额外在重试3次，如果服务提供方多个，会采用轮询算法依次调用-->
+    <!--version="*",调用指定的服务提供者版本，实现灰度发布，*表示随机调用不同版本-->
+    <dubbo:reference interface="dubbo.service.UserService" id="userService" check="false" timeout="5000" retries="3" version="*" stub="dubbo.service.stub.UserServiceStub">
+        <!--<dubbo:method name="getUserAddressList" timeout="1000"></dubbo:method>-->
+    </dubbo:reference>
+
+    <!--关闭所有服务的启动时检查-->
+    <dubbo:consumer check="false" timeout="1000"></dubbo:consumer>
+
+    <!--配置监控中心 监控中心协议，如果为protocol="registry"，表示从注册中心发现监控中心地址，否则直连监控中心。-->
+    <dubbo:monitor address="127.0.0.1:7071" protocol="registry"/>
+
+</beans>
